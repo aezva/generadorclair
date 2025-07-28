@@ -817,7 +817,7 @@ const getEmbedCode = () => {
             } else {
                 trigger.classList.add('open');
                 content.classList.add('open');
-            }
+                }
         }
 
         function selectOption(selectId, value, displayText) {
@@ -1032,6 +1032,7 @@ export default function NameGenerator() {
   const [culturalInfluence, setCulturalInfluence] = useState("none")
   const [generatedNames, setGeneratedNames] = useState<string[]>([])
   const [showEmbedCode, setShowEmbedCode] = useState(false)
+  const [copiedToast, setCopiedToast] = useState<{ show: boolean; name: string }>({ show: false, name: "" })
 
   const generateNames = () => {
     const newNames: string[] = []
@@ -1150,8 +1151,52 @@ export default function NameGenerator() {
     return "Nombre"
   }
 
-  const copyName = (name: string) => {
-    navigator.clipboard.writeText(name)
+  const copyName = async (name: string) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(name)
+      } else {
+        // Fallback para navegadores que no soportan clipboard API
+        const textArea = document.createElement("textarea")
+        textArea.value = name
+        textArea.style.position = "fixed"
+        textArea.style.left = "-999999px"
+        textArea.style.top = "-999999px"
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        document.execCommand("copy")
+        document.body.removeChild(textArea)
+      }
+
+      // Show toast notification
+      setCopiedToast({ show: true, name })
+      setTimeout(() => {
+        setCopiedToast({ show: false, name: "" })
+      }, 2000)
+    } catch (err) {
+      console.error("Error al copiar:", err)
+      // Fallback adicional
+      const textArea = document.createElement("textarea")
+      textArea.value = name
+      textArea.style.position = "fixed"
+      textArea.style.left = "-999999px"
+      textArea.style.top = "-999999px"
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        document.execCommand("copy")
+        // Show toast notification even for fallback
+        setCopiedToast({ show: true, name })
+        setTimeout(() => {
+          setCopiedToast({ show: false, name: "" })
+        }, 2000)
+      } catch (fallbackErr) {
+        console.error("Error en fallback:", fallbackErr)
+      }
+      document.body.removeChild(textArea)
+    }
   }
 
   return (
@@ -1312,6 +1357,14 @@ export default function NameGenerator() {
             </CardContent>
           </Card>
         )} */}
+        {/* Toast notification */}
+        {copiedToast.show && (
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 md:top-4 md:right-4 md:left-auto md:transform-none z-50 animate-in slide-in-from-top-2 duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3 mx-4 md:mx-0 max-w-xs">
+              <span className="text-gray-600 text-sm font-medium truncate block">"{copiedToast.name}" copiado</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
