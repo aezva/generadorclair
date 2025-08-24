@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Shuffle, Copy, Check, Globe } from "lucide-react" // Import Check and Globe icons
+import { Shuffle, Copy, Check } from "lucide-react" // Import Check icon
 import { useLanguage } from "@/components/language-provider"
 
 const nameData = {
@@ -2878,7 +2878,7 @@ const getEmbedCode = () => {
 }
 
 export default function NameGenerator() {
-  const { language, t, toggleLanguage } = useLanguage()
+  const { language, t } = useLanguage()
   const [genre, setGenre] = useState("fantasy")
   const [gender, setGender] = useState("male")
   const [nameType, setNameType] = useState("character")
@@ -3076,18 +3076,7 @@ export default function NameGenerator() {
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" rel="stylesheet" />
 
       <div className="max-w-4xl mx-auto">
-        {/* Language Toggle Button */}
-        <div className="flex justify-end p-3 md:p-6 pb-0">
-          <Button
-            onClick={toggleLanguage}
-            variant="outline"
-            size="sm"
-            className="border-[#8168FF] text-[#8168FF] hover:bg-[#8168FF] hover:text-white focus:ring-0 focus:ring-offset-0"
-          >
-            <Globe className="w-4 h-4 mr-2" />
-            {language === 'en' ? 'ES' : 'EN'}
-          </Button>
-        </div>
+
         
         <div className="grid md:grid-cols-2 gap-4 md:gap-8 p-3 md:p-6">
           <Card className="border-gray-200">
