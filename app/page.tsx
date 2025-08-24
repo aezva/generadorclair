@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Shuffle, Copy, Check } from "lucide-react" // Import Check icon
+import { Shuffle, Copy, Check, Globe } from "lucide-react" // Import Check and Globe icons
+import { useLanguage } from "@/components/language-provider"
 
 const nameData = {
   fantasy: {
@@ -2846,7 +2847,7 @@ const getEmbedCode = () => {
                     return firstName + ' ' + lastName;
                 }
             }
-            return "Nombre";
+            return language === 'en' ? "Name" : "Nombre";
         }
 
         function copyName(name) {
@@ -2877,6 +2878,7 @@ const getEmbedCode = () => {
 }
 
 export default function NameGenerator() {
+  const { language, t, toggleLanguage } = useLanguage()
   const [genre, setGenre] = useState("fantasy")
   const [gender, setGender] = useState("male")
   const [nameType, setNameType] = useState("character")
@@ -3016,7 +3018,7 @@ export default function NameGenerator() {
         return `${firstName} ${lastName}`
       }
     }
-    return "Nombre"
+    return language === 'en' ? "Name" : "Nombre"
   }
 
   const copyName = async (name: string, index: number) => {
@@ -3074,72 +3076,85 @@ export default function NameGenerator() {
       <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&display=swap" rel="stylesheet" />
 
       <div className="max-w-4xl mx-auto">
+        {/* Language Toggle Button */}
+        <div className="flex justify-end p-3 md:p-6 pb-0">
+          <Button
+            onClick={toggleLanguage}
+            variant="outline"
+            size="sm"
+            className="border-[#8168FF] text-[#8168FF] hover:bg-[#8168FF] hover:text-white focus:ring-0 focus:ring-offset-0"
+          >
+            <Globe className="w-4 h-4 mr-2" />
+            {language === 'en' ? 'ES' : 'EN'}
+          </Button>
+        </div>
+        
         <div className="grid md:grid-cols-2 gap-4 md:gap-8 p-3 md:p-6">
           <Card className="border-gray-200">
             <CardHeader className="pb-3 md:pb-6">
               <CardTitle className="text-black text-base md:text-lg" style={{ fontFamily: "Cinzel, serif" }}>
-                Configuración
+                {t('configuration')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 md:space-y-4 pt-0">
               <div>
-                <label className="block text-sm font-medium text-black mb-1.5 md:mb-2">Tipo de Nombre</label>
+                <label className="block text-sm font-medium text-black mb-1.5 md:mb-2">{t('nameType')}</label>
                 <Select value={nameType} onValueChange={setNameType}>
                   <SelectTrigger className="border-gray-300 focus:border-[#8168FF] focus:ring-0 focus:ring-offset-0 h-11 md:h-10 text-base md:text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="character">Nombre de Personaje</SelectItem>
-                    <SelectItem value="character-surname">Nombre de Personaje con Apellido</SelectItem>
-                    <SelectItem value="place">Nombre de Lugar</SelectItem>
-                    <SelectItem value="object">Nombre de Objeto</SelectItem>
-                    <SelectItem value="random">Al Azar</SelectItem>
+                    <SelectItem value="character">{t('characterName')}</SelectItem>
+                    <SelectItem value="character-surname">{t('characterNameWithSurname')}</SelectItem>
+                    <SelectItem value="place">{t('placeName')}</SelectItem>
+                    <SelectItem value="object">{t('objectName')}</SelectItem>
+                    <SelectItem value="random">{t('random')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-1.5 md:mb-2">Influencia Cultural</label>
+                <label className="block text-sm font-medium text-black mb-1.5 md:mb-2">{t('culturalInfluence')}</label>
                 <Select value={culturalInfluence} onValueChange={setCulturalInfluence}>
                   <SelectTrigger className="border-gray-300 focus:border-[#8168FF] focus:ring-0 focus:ring-offset-0 h-11 md:h-10 text-base md:text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Ninguna</SelectItem>
-                    <SelectItem value="japanese">Japonesa</SelectItem>
-                    <SelectItem value="nordic">Nórdica</SelectItem>
-                    <SelectItem value="arabic">Árabe</SelectItem>
-                    <SelectItem value="celtic">Celta</SelectItem>
-                    <SelectItem value="slavic">Eslava</SelectItem>
+                    <SelectItem value="none">{t('none')}</SelectItem>
+                    <SelectItem value="japanese">{t('japanese')}</SelectItem>
+                    <SelectItem value="nordic">{t('nordic')}</SelectItem>
+                    <SelectItem value="arabic">{t('arabic')}</SelectItem>
+                    <SelectItem value="celtic">{t('celtic')}</SelectItem>
+                    <SelectItem value="slavic">{t('slavic')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-1.5 md:mb-2">Género Literario</label>
+                <label className="block text-sm font-medium text-black mb-1.5 md:mb-2">{t('literaryGenre')}</label>
                 <Select value={genre} onValueChange={setGenre}>
                   <SelectTrigger className="border-gray-300 focus:border-[#8168FF] focus:ring-0 focus:ring-offset-0 h-11 md:h-10 text-base md:text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="fantasy">Fantasía</SelectItem>
-                    <SelectItem value="historical">Histórico</SelectItem>
-                    <SelectItem value="modern">Moderno</SelectItem>
-                    <SelectItem value="exotic">Exótico</SelectItem>
+                    <SelectItem value="fantasy">{t('fantasy')}</SelectItem>
+                    <SelectItem value="historical">{t('historical')}</SelectItem>
+                    <SelectItem value="modern">{t('modern')}</SelectItem>
+                    <SelectItem value="exotic">{t('exotic')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-1.5 md:mb-2">Género del Personaje</label>
+                <label className="block text-sm font-medium text-black mb-1.5 md:mb-2">{t('characterGender')}</label>
                 <Select value={gender} onValueChange={setGender}>
                   <SelectTrigger className="border-gray-300 focus:border-[#8168FF] focus:ring-0 focus:ring-offset-0 h-11 md:h-10 text-base md:text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="male">Masculino</SelectItem>
-                    <SelectItem value="female">Femenino</SelectItem>
-                    <SelectItem value="neutral">Neutral</SelectItem>
+                    <SelectItem value="male">{t('male')}</SelectItem>
+                    <SelectItem value="female">{t('female')}</SelectItem>
+                    <SelectItem value="neutral">{t('neutral')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -3149,7 +3164,7 @@ export default function NameGenerator() {
                 className="w-full bg-[#8168FF] hover:bg-[#6d5ce6] text-white focus:ring-0 focus:ring-offset-0 h-11 md:h-10 text-base md:text-sm font-medium"
               >
                 <Shuffle className="w-5 h-5 md:w-4 md:h-4 mr-2" />
-                Generar Nombres
+                {t('generateNames')}
               </Button>
 
               {/*
@@ -3168,13 +3183,13 @@ export default function NameGenerator() {
           <Card className="border-gray-200">
             <CardHeader className="pb-3 md:pb-6">
               <CardTitle className="text-black text-base md:text-lg" style={{ fontFamily: "Cinzel, serif" }}>
-                Nombres Generados
+                {t('generatedNames')}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               {generatedNames.length === 0 ? (
                 <p className="text-gray-500 text-center py-6 md:py-8 italic text-sm md:text-base">
-                  Haz clic en "Generar Nombres" para comenzar
+                  {t('clickToStart')}
                 </p>
               ) : (
                 <div className="space-y-2 md:space-y-3">
